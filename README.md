@@ -1,84 +1,110 @@
 # Text Analysis Project
 
-## Overview
-This project performs text analysis on articles to extract various metrics including sentiment scores, readability indices, and other text statistics. It downloads articles from URLs, processes them, and generates an Excel output with the analysis results.
+Article analysis tool that extracts content and calculates readability metrics using NLP techniques.
 
-## Approach
+## Technical Stack
 
-1. **Data Extraction**
-   - Reads article URLs from `Input.xlsx`
-   - Downloads article content using BeautifulSoup and requests
-   - Cleans HTML and extracts main article text
-   - Stores articles in the `articles` directory
+- **Python 3.8+** - Core implementation
+- **newspaper3k** - Article extraction with HTML cleaning
+- **NLTK** - Natural language processing and tokenization
+- **pandas** - Data handling and Excel I/O
+- **concurrent.futures** - Parallel processing implementation
+- **tqdm** - Progress tracking
 
-2. **Text Processing**
-   - Removes stop words using custom lists from `StopWords`
-   - Uses positive/negative word dictionaries from `MasterDictionary`
-   - Tokenizes text into sentences and words using NLTK
+## Features
 
-3. **Analysis & Metrics**
-   - Calculates sentiment scores (positive/negative)
-   - Computes readability metrics (Fog Index, complex words)
-   - Analyzes text statistics (word count, syllables, etc.)
-   - Generates personal pronoun counts and average word lengths
+- Parallel processing of multiple articles simultaneously
+- Extracts clean article content using newspaper3k
+- Calculates sentiment scores, readability metrics and text statistics
+- Progress bar shows extraction and analysis status
+- Results saved to Excel file
 
-## Setup & Installation
+## Installation
 
-1. Clone the repository
-2. Install required dependencies:
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd Article-Insight-Analyzer
+```
 
+2. Create and activate virtual environment (recommended):
+```bash
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate     # Windows
+```
+
+3. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Download NLTK data:
+4. Download required NLTK data:
 ```python
 import nltk
 nltk.download('punkt')
 ```
 
-## Dependencies
-- pandas - Data manipulation and analysis
-- requests - HTTP library for downloading articles
-- beautifulsoup4 - Web scraping and HTML parsing
-- nltk - Natural Language Processing tools
-- openpyxl - Excel file handling
-
-## Project Structure
-```
-├── analyze_articles.py  # Main analysis script
-├── text_analysis.py    # Article downloading and analysis
-├── Input.xlsx         # Input file with URLs
-├── articles/          # Downloaded article texts
-├── MasterDictionary/  # Sentiment word lists
-└── StopWords/        # Stop word lists
-```
-
 ## Usage
 
-1. Ensure your `Input.xlsx` contains the URLs to analyze
-2. To download and analyze articles:
-```bash
+1. Place your input Excel file as `Input.xlsx` with columns:
+   - URL_ID: Unique identifier for each article
+   - URL: Web URL of the article
+
+2. Run the analysis:
+```python
 python text_analysis.py
 ```
 
-3. To analyze existing articles:
-```bash
-python analyze_articles.py
+3. Results will be saved to `Output Data Structure.xlsx` with the following metrics:
+
+- Sentiment Scores
+  - POSITIVE SCORE
+  - NEGATIVE SCORE 
+  - POLARITY SCORE
+  - SUBJECTIVITY SCORE
+
+- Readability Metrics
+  - AVG SENTENCE LENGTH
+  - PERCENTAGE OF COMPLEX WORDS
+  - FOG INDEX
+  - AVG NUMBER OF WORDS PER SENTENCE
+  - COMPLEX WORD COUNT
+  - WORD COUNT
+  - SYLLABLE PER WORD
+
+- Text Statistics
+  - PERSONAL PRONOUNS
+  - AVG WORD LENGTH
+
+## Implementation Details
+
+### Text Extraction (`extract_article()`)
+- Uses `newspaper3k` for content extraction
+- Custom cleaning pipeline:
+  - HTML tag removal
+  - Whitespace normalization
+  - Related content removal
+  - Article/title separation
+
+### Text Analysis (`TextAnalyzer` class)
+- Sentiment Analysis:
+  ```
+  Positive Score = Count of positive words
+  Negative Score = Count of negative words
+  Polarity Score = (Pos - Neg) / (Pos + Neg + 0.000001)
+  Subjectivity Score = (Pos + Neg) / (Word Count + 0.000001)
+  ```
+
+## Project Structure
+
 ```
-
-The script will:
-- Process each article
-- Calculate metrics
-- Generate `Output Data Structure.xlsx` with results
-
-## Output
-The analysis generates an Excel file with the following metrics for each article:
-- Sentiment scores (positive/negative)
-- Polarity and subjectivity scores
-- Average sentence length
-- Complex word percentages
-- Fog index
-- Word counts and syllable statistics
-- Personal pronoun counts
-- Average word length
+├── text_analysis.py      # Main script with article extraction and analysis
+├── StopWords/           # Stop words files
+├── MasterDictionary/    # Positive and negative word lists
+│   ├── positive-words.txt
+│   └── negative-words.txt
+├── articles/            # Extracted article text files
+├── Input.xlsx           # Input file with URLs
+└── requirements.txt     # Python dependencies
+```
