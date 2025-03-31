@@ -298,6 +298,16 @@ def extract_article(url):
     return ""
 
 def main():
+    # Check if articles directory exists and has content
+    if os.path.exists('articles') and len(os.listdir('articles')) > 0:
+        print("Articles folder already exists. Skipping download phase...")
+        print("Moving directly to analysis phase...")
+        # Call the analysis script
+        import analyze_articles
+        analyze_articles.main()
+        return
+
+    # If no articles exist, continue with extraction process
     # Create articles directory if it doesn't exist
     if not os.path.exists('articles'):
         os.makedirs('articles')
@@ -339,9 +349,9 @@ def main():
     # Create output DataFrame
     output_df = pd.DataFrame(results)
     
-    # Save to Excel
-    output_df.to_excel('Output Data Structure.xlsx', index=False)
-    print("Analysis complete! Results saved to 'Output Data Structure.xlsx'")
+    # Save to Excel with new filename
+    output_df.to_excel('output.xlsx', index=False)
+    print("Analysis complete! Results saved to 'output.xlsx'")
 
 if __name__ == '__main__':
     main()
