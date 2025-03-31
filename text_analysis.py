@@ -210,8 +210,8 @@ def main():
 
     # Create output DataFrame and save
     output_df = pd.DataFrame(results)
-    output_df.to_excel('Output Data Structure.xlsx', index=False)
-    print("Analysis complete! Results saved to 'Output Data Structure.xlsx'")
+    output_df.to_excel('Output.xlsx', index=False)
+    print("Analysis complete! Results saved to 'Output.xlsx'")
 
 if __name__ == '__main__':
     main()

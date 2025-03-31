@@ -3,5 +3,5 @@ requests
 newspaper3k
 nltk
 openpyxl
-lxml[html_clean]
+lxml-html-clean
 tqdm
