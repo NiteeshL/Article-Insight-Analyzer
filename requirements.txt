@@ -4,3 +4,4 @@ newspaper3k
 nltk
 openpyxl
 lxml[html_clean]
+tqdm

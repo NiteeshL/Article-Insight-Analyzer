@@ -7,6 +7,8 @@ import nltk
 from nltk.tokenize import sent_tokenize, word_tokenize
 from newspaper import Article, Config
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from tqdm import tqdm
 
 nltk.data.path = [os.path.join(os.path.expanduser('~'), 'AppData', 'Roaming', 'nltk_data')]
 
@@ -159,26 +161,54 @@ def extract_article(url):
         print(f"Error extracting from {url}: {str(e)}")
         return ""
 
-def main():
-    if not os.path.exists('articles'):
-        os.makedirs('articles')
-    analyzer = TextAnalyzer()
-    input_df = pd.read_excel('Input.xlsx')
-    results = []
-    for _, row in input_df.iterrows():
-        url_id = str(row['URL_ID'])
-        url = row['URL']
-        print(f"Processing URL_ID: {url_id}")
+def process_article(row, analyzer):
+    url_id = str(row['URL_ID'])
+    url = row['URL']
+    try:
         article_text = extract_article(url)
+        
+        # Save article text
         with open(f'articles/{url_id}.txt', 'w', encoding='utf-8') as f:
             f.write(article_text)
+            
+        # Analyze text
         analysis_results = analyzer.analyze_text(article_text)
-        result = {
+        
+        return {
             'URL_ID': url_id,
             'URL': url,
             **analysis_results
         }
-        results.append(result)
+    except Exception as e:
+        print(f"Error processing {url_id}: {e}")
+        return None
+
+def main():
+    if not os.path.exists('articles'):
+        os.makedirs('articles')
+        
+    analyzer = TextAnalyzer()
+    input_df = pd.read_excel('Input.xlsx')
+    results = []
+    
+    # Use ThreadPoolExecutor for parallel processing
+    # Adjust max_workers based on your system capabilities
+    with ThreadPoolExecutor(max_workers=20) as executor:
+        # Create future tasks
+        future_to_url = {
+            executor.submit(process_article, row, analyzer): row 
+            for _, row in input_df.iterrows()
+        }
+        
+        # Process results as they complete with progress bar
+        with tqdm(total=len(future_to_url), desc="Processing articles") as pbar:
+            for future in as_completed(future_to_url):
+                result = future.result()
+                if result:
+                    results.append(result)
+                pbar.update(1)
+
+    # Create output DataFrame and save
     output_df = pd.DataFrame(results)
     output_df.to_excel('Output Data Structure.xlsx', index=False)
     print("Analysis complete! Results saved to 'Output Data Structure.xlsx'")
