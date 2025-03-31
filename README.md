@@ -56,7 +56,7 @@ nltk.download('punkt')
 python text_analysis.py
 ```
 
-3. Results will be saved to `Output Data Structure.xlsx` with the following metrics:
+3. Results will be saved to `Output.xlsx` with the following metrics:
 
 - Sentiment Scores
   - POSITIVE SCORE
