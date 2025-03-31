@@ -1,0 +1,24 @@
+# Ignore all files currently in the directory
+*
+
+# Allow this .gitignore file
+!.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual Environment
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+
+# Project specific
+articles/
+*.xlsx
+Input.xlsx
+StopWords/
+MasterDictionary/
