@@ -4,9 +4,8 @@ import re
 import nltk
 from nltk.tokenize import sent_tokenize, word_tokenize
 
-# Set NLTK data path and ensure it's downloaded
+# Set NLTK data path
 nltk.data.path = [os.path.join(os.path.expanduser('~'), 'AppData', 'Roaming', 'nltk_data')]
-nltk.download('punkt', download_dir=nltk.data.path[0])
 
 class ArticleAnalyzer:
     def __init__(self):

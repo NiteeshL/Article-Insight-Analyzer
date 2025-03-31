@@ -10,20 +10,6 @@ import time
 # Set NLTK data path
 nltk.data.path = [os.path.join(os.path.expanduser('~'), 'AppData', 'Roaming', 'nltk_data')]
 
-# Download required NLTK data with error handling
-def setup_nltk():
-    try:
-        nltk.download('punkt', download_dir=nltk.data.path[0])
-        nltk.download('averaged_perceptron_tagger', download_dir=nltk.data.path[0])
-        # Create tokenizer explicitly
-        nltk.data.load('tokenizers/punkt/english.pickle')
-    except LookupError as e:
-        print(f"Error downloading NLTK data: {e}")
-        print("Falling back to basic tokenization...")
-
-# Call setup at start
-setup_nltk()
-
 class TextAnalyzer:
     def __init__(self):
         self.positive_words = self._load_words('MasterDictionary/positive-words.txt')
@@ -298,16 +284,6 @@ def extract_article(url):
     return ""
 
 def main():
-    # Check if articles directory exists and has content
-    if os.path.exists('articles') and len(os.listdir('articles')) > 0:
-        print("Articles folder already exists. Skipping download phase...")
-        print("Moving directly to analysis phase...")
-        # Call the analysis script
-        import analyze_articles
-        analyze_articles.main()
-        return
-
-    # If no articles exist, continue with extraction process
     # Create articles directory if it doesn't exist
     if not os.path.exists('articles'):
         os.makedirs('articles')
@@ -349,9 +325,9 @@ def main():
     # Create output DataFrame
     output_df = pd.DataFrame(results)
     
-    # Save to Excel with new filename
-    output_df.to_excel('output.xlsx', index=False)
-    print("Analysis complete! Results saved to 'output.xlsx'")
+    # Save to Excel
+    output_df.to_excel('Output Data Structure.xlsx', index=False)
+    print("Analysis complete! Results saved to 'Output Data Structure.xlsx'")
 
 if __name__ == '__main__':
     main()
