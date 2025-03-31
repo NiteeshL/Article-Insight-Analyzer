@@ -22,3 +22,6 @@ articles/
 Input.xlsx
 StopWords/
 MasterDictionary/
+
+!text_analysis.py
+!requirements.txt
